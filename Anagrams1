@@ -1,0 +1,66 @@
+import java.util.Dictionary;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
+
+public class Anagrams {
+    private final Set<String> dictionary;
+    private Set<String> solutionSet = new HashSet<>();
+
+
+    public Anagrams(Set<String> dictionary){
+
+        if(dictionary == null){
+            throw new IllegalArgumentException();
+        }
+        this.dictionary = dictionary;
+    }
+
+
+    public Set<String> getWords(String phrase){
+        if (phrase == null){
+            throw new IllegalArgumentException();
+        }
+        LetterInventory w = new LetterInventory(phrase);
+        Set<String> matchingWords = new TreeSet<String>();
+        for (String dWord: dictionary) {
+            if(w.contains(dWord)){
+                matchingWords.add(dWord);
+            }
+        }
+        return matchingWords;
+    }
+
+    public void print(String phrase){
+        boolean solution = false;
+        LetterInventory phr = new LetterInventory(phrase);
+        if (phrase.length() == 0){
+//            System.out.println("Victory is mine!");
+            System.out.println(solutionSet);
+            //solutionSet.clear();
+        } else {
+            for(String g : getWords(phrase)){
+                phr = new LetterInventory(phrase);
+                if (phr.contains(g)){
+                    solutionSet.add(g);
+                    phr.subtract(g);
+                    print(phr.toString());
+                }
+                solutionSet.remove(g);
+                /*
+                solutionSet.add(g);
+                phr.subtract(g);
+                //System.out.println(solutionSet);
+                Set<String> wordSet = getWords(phr.toString());
+                //System.out.print(solutionSet);
+                if (!phr.isEmpty() && wordSet.size() == 0){
+                    solutionSet.clear();
+                }
+//                String next = phr.toString();
+                print(phr.toString());
+                 */
+            }
+        }
+    }
+}
+

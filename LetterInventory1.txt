@@ -1,0 +1,139 @@
+/*
+    Name: Neil Miller
+    Date: 02/14/20
+    Professor: Darrel Criss
+    Class: CS 145B 1:30
+    Assignment: Lab 3 (LetterInventory)
+    Purpose: The constructor for the class takes a String and computes how many of each letter are
+     		in the String. Various methods provide information about the letters in the string.
+ */
+
+public class LetterInventory {
+    private static final int ALPHABET_SIZE = 26;
+    public int[] inventory;
+    private int size;
+
+    public LetterInventory(String data){
+        size = 0;
+        inventory = new int[ALPHABET_SIZE];
+        data = data.toLowerCase();
+        for (int i = 0; i < data.length(); i++ ){
+            if (Character.isAlphabetic(data.charAt(i))){
+                int place = data.charAt(i)-97;
+                inventory[place]++;
+                size++;
+            }
+        }
+    }
+
+    public int get(char letter){
+        // Returns the amount of a given letter in the LetterInventory.
+        if (Character.isAlphabetic(letter)) {
+            letter = Character.toLowerCase(letter);
+            int position = letter - 97;
+            return inventory[position];
+        } else {
+            System.out.println("That is not a letter.");
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void set(char letter, int value) {
+        // Sets the number of a particular character to a value.
+        if (Character.isAlphabetic(letter) && (value >= 0)) {
+            int position = Character.toLowerCase(letter) - 97;
+            this.size += (value - inventory[position]);
+            inventory[position] = value;
+        }else if (!Character.isAlphabetic(letter)){
+            System.out.println("The character needs to be a letter.");
+            throw new IllegalArgumentException();
+        } else if (value < 0){
+            System.out.println("The value needs to be greater than 0.");
+            throw new IllegalArgumentException();
+        }
+
+    }
+
+    public int size(){
+        // Returns the number of letters in the LetterInventory.
+        return size;
+    }
+
+    public boolean isEmpty(){
+        // Returns true if the string which created the LetterInventory contained no letters.
+        if (size == 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public String toString(){
+        //Returns a string containing all the letters in the original string in alphabetical order.
+        String toString = "";
+        for (int i = 0; i < ALPHABET_SIZE; i++){
+            for (int y = 0; y < inventory[i]; y++){
+                toString += (char)(i + 97);
+            }
+        }
+        return toString;
+    }
+
+    public LetterInventory combine(LetterInventory other){
+        //Combines the two letter inventories and returns a third.
+        LetterInventory combined = new LetterInventory("");
+        for(int i = 0; i < ALPHABET_SIZE; i++){
+            combined.inventory[i] += this.inventory[i];
+            combined.inventory[i] += other.inventory[i];
+        }
+        combined.size = this.size + other.size;
+        return combined;
+    }
+
+    public void add(LetterInventory lI){
+        for(int i = 0; i < ALPHABET_SIZE; i++){
+            this.inventory[i]+= lI.inventory[i];
+        }
+        this.size += lI.size;
+    }
+
+    public void add(String addStr){
+        LetterInventory lI = new LetterInventory(addStr);
+        add(lI);
+    }
+
+    public boolean contains(LetterInventory Other){
+        for (int i = 0; i < 26; i++){
+            if (Other.inventory[i] > this.inventory[i]){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean contains(String Other){
+        LetterInventory othr = new LetterInventory(Other);
+        if(contains(othr)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public void subtract(LetterInventory lI){
+        for (int i = 0; i < lI.inventory.length; i++){
+            if( this.inventory[i] < lI.inventory[i]){
+                throw new IllegalArgumentException();
+            }
+        }
+        for (int i = 0; i < lI.inventory.length; i++) {
+            this.size -= lI.inventory[i];
+            this.inventory[i] -= lI.inventory[i];
+        }
+    }
+
+    public void subtract(String str){
+        LetterInventory lI = new LetterInventory(str);
+        subtract(lI);
+    }
+}
